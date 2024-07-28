@@ -37,16 +37,12 @@ Write-Host "Processing."
 
 # Second step: Create files
 ## autorun.lua
-$ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "Y" -or $NeedServer -eq "y"))])
-$ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "Y" -or $NeedClient -eq "y"))])
-$ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "Y" -or $NeedConst -eq "y"))])
-
 New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value @"
 $TableName = {}
 
 $TableName.ID = "geows"
 
-function $TableName:Load()
+function ${TableName}:Load()
 
     if SERVER then
 
@@ -70,7 +66,7 @@ function $TableName:Load()
     end
 
 end
-$TableName:Load()
+${TableName}:Load()
 "@ -Force > $NULL
 
 ## config.lua
@@ -118,30 +114,27 @@ RX = RX or function(x) return x / 1920 * ScrW() end
 RY = RY or function(y) return y / 1080 * ScrH() end
 
 -- Automatic font-creation function
-function ${TableName}:Font(iSize, sType)
+function ${TableName}:Font(iSize, iWeight)
 
-	iSize = iSize or 15
-	sType = sType or "Medium" -- Light, Medium or Bold
+    iSize = (iSize or 24)
+    iWeight = (iWeight or 500)
 
-	local sName = ("${TableName}:Font:%i:%s"):format(iSize, sType)
-	if not $TableName.Fonts[sName] then
+    local sName = ("${TableName}:Font:%i:%i"):format(iSize, iWeight)
 
-		if sType == "Bold" then
-			sType = ""
-		end
+    if not $TableName.Fonts[sName] then
 
-		surface.CreateFont(sName, {
-			font = ("Montserrat %s"):format(sType):Trim(),
-			size = RX(iSize),
-			weight = 500,
-			extended = false
-		})
+        surface.CreateFont(sName, {
+            font = "Montserrat",
+            extended = false,
+            size = GeoWS:RX(iSize),
+            weight = iWeight
+        })
 
-		$TableName.Fonts[sName] = true
+        $TableName.Fonts[sName] = true
 
-	end
+    end
 
-	return sName
+    return sName
 
 end
 "@ -Force > $NULL
