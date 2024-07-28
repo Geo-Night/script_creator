@@ -2,11 +2,11 @@ Write-Host "Script Creator - Automatic addon creation
 "
 
 # Asking for details
-$DevName = Read-Host -Prompt "Entrez le nom (en minuscule, un seul mot) de votre addon (Par défaut : 'nom_addon')"
-$TableName = Read-Host -Prompt "Entrez le nom de la table globale qui sera créée (Par défaut : 'NomAddon')"
-$NeedServer = Read-Host -Prompt "Avez-vous besoin d'une partie serveur pour votre addon ? (O/n)"
-$NeedClient = Read-Host -Prompt "Avez-vous besoin d'une partie client pour votre addon ? (O/n)"
-$NeedConst = Read-Host -Prompt "Voulez-vous un fichier pour mettre des valeurs constantes ? (O/n)"
+$DevName = Read-Host -Prompt "Entrez le nom (en minuscule, un seul mot) de votre addon (Par defaut : 'nom_addon')"
+$TableName = Read-Host -Prompt "Entrez le nom de la table globale qui sera créée (Par defaut : 'NomAddon')"
+$NeedServer = Read-Host -Prompt "Avez-vous besoin d'une partie serveur pour votre addon ? (y/n)"
+$NeedClient = Read-Host -Prompt "Avez-vous besoin d'une partie client pour votre addon ? (y/n)"
+$NeedConst = Read-Host -Prompt "Voulez-vous un fichier pour mettre des valeurs constantes ? (y/n)"
 Write-Host ""
 Clear-Host
 
