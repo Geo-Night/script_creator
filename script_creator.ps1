@@ -40,28 +40,28 @@ Write-Host "Processing."
 New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value @"
 $TableName = {}
 
-$TableName.ID = "geows"
+$TableName.Folder = "${DevName}"
 
 function ${TableName}:Load()
 
     if SERVER then
 
-        include(self.ID.."/config.lua")
-        include(self.ID.."/constants.lua")
+        include(self.Folder.."/config.lua")
+        include(self.Folder.."/constants.lua")
     
-        AddCSLuaFile(self.ID.."/config.lua")
-        AddCSLuaFile(self.ID.."/constants.lua")
+        AddCSLuaFile(self.Folder.."/config.lua")
+        AddCSLuaFile(self.Folder.."/constants.lua")
 
-        AddCSLuaFile(self.ID.."/client/cl_functions.lua")
-        AddCSLuaFile(self.ID.."/client/cl_hooks.lua")
+        AddCSLuaFile(self.Folder.."/client/cl_functions.lua")
+        AddCSLuaFile(self.Folder.."/client/cl_hooks.lua")
 
     else
 
-        include(self.ID.."/config.lua")
-        include(self.ID.."/constants.lua")
+        include(self.Folder.."/config.lua")
+        include(self.Folder.."/constants.lua")
 
-        include(self.ID.."/client/cl_functions.lua")
-        include(self.ID.."/client/cl_hooks.lua")
+        include(self.Folder.."/client/cl_functions.lua")
+        include(self.Folder.."/client/cl_hooks.lua")
 
     end
 
@@ -96,7 +96,7 @@ $TableName.Constants["colors"] = {
 
 -- Materials constants
 $TableName.Constants["materials"] = {
-	["logo"] = Material("materials/${DevName}/icons/wasied.png"),
+	["logo"] = Material("materials/${DevName}"),
 }
 "@ -Force > $NULL
 
@@ -109,9 +109,8 @@ if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value @"
 $TableName.Fonts = {}
 
--- Automatic responsive functions
-RX = RX or function(x) return x / 1920 * ScrW() end
-RY = RY or function(y) return y / 1080 * ScrH() end
+function ${TableName}:RX(x) return x / 1920 * ScrW() end
+function ${TableName}:RY(y) return y / 1080 * ScrH() end
 
 -- Automatic font-creation function
 function ${TableName}:Font(iSize, iWeight)
@@ -121,16 +120,16 @@ function ${TableName}:Font(iSize, iWeight)
 
     local sName = ("${TableName}:Font:%i:%i"):format(iSize, iWeight)
 
-    if not $TableName.Fonts[sName] then
+    if not self.Fonts[sName] then
 
         surface.CreateFont(sName, {
             font = "Montserrat",
             extended = false,
-            size = GeoWS:RX(iSize),
+            size = ${TableName}:RX(iSize),
             weight = iWeight
         })
 
-        $TableName.Fonts[sName] = true
+        self.Fonts[sName] = true
 
     end
 
@@ -146,7 +145,6 @@ if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value @"
--- Clear fonts cache after a screen size change
 hook.Add("OnScreenSizeChanged", "${TableName}:OnScreenSizeChanged", function()
 	${TableName}.Fonts = {}
 end)
