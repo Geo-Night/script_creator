@@ -4,7 +4,7 @@ $AddonName = Read-Host -Prompt "Enter the name of the addon (addon_name)"
 $TableName = Read-Host -Prompt "Enter the name of the table (AddonName)"
 $NeedServer = Read-Host -Prompt "Do you need a server part ? (y/n)"
 $NeedClient = Read-Host -Prompt "Do you need a client part ? (y/n)"
-$NeedConst = Read-Host -Prompt "Do you need a constants values ? (y/n)"
+$NeedConst = Read-Host -Prompt "Do you need constants values ? (y/n)"
 Write-Host ""
 Clear-Host
 
@@ -17,19 +17,19 @@ $LuaRoot = "$AddonName/lua/$AddonName/"
 
 New-Item -Name "$AddonName" -ItemType "directory" -Force > $null
 
-if ($NeedServer -eq "y" or $NeedServer -eq "Y") {
+if ($NeedServer -eq "y" -or $NeedServer -eq "Y") {
     New-Item -Name "${LuaRoot}server" -ItemType "directory" -Force > $null
 }
 
-if ($NeedClient -eq "y" or $NeedClient -eq "Y") {
+if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
     New-Item -Name "${LuaRoot}client" -ItemType "directory" -Force > $null
 }
 
 Write-Host "Processing"
 
-$ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "y" -or $NeedServer -eq "Y"))])
-$ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "y" -or $NeedClient -eq "Y"))])
-$ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "y" -or $NeedConst -eq "Y"))])
+$ServerComment = if ($NeedServer -eq "y" -or $NeedServer -eq "Y") { "" } else { "-- " }
+$ClientComment = if ($NeedClient -eq "y" -or $NeedClient -eq "Y") { "" } else { "-- " }
+$ConstComment = if ($NeedConst -eq "y" -or $NeedConst -eq "Y") { "" } else { "-- " }
 
 New-Item -Path "./$AddonName/lua/autorun/" -Name "${AddonName}_load.lua" -ItemType "file" -Value @"
 $TableName = {}
@@ -81,8 +81,7 @@ $TableName.Config.AdminRanks = {
 }
 "@ -Force > $null
 
-if ($NeedConst -eq "y" or $NeedConst -eq "Y")
-{
+if ($NeedConst -eq "y" -or $NeedConst -eq "Y") {
 
 New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
 $TableName.Constants = {}
@@ -100,8 +99,7 @@ $TableName.Constants.Materials = {
 
 }
 
-if ($NeedClient -eq "y" or $NeedClient -eq "Y")
-{
+if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 
 New-Item -Path "./${LuaRoot}client" -Name "cl_functions.lua" -ItemType "file" -Value @"
 $TableName.Fonts = {}
@@ -136,65 +134,57 @@ end
 
 }
 
-if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
-{
+if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value @"
 hook.Add("OnScreenSizeChanged", "${TableName}:OnScreenSizeChanged", function()
 	${TableName}.Fonts = {}
 end)
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
-{
+if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value @"
 -- cl_network.lua
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
-{
+if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_vgui.lua" -ItemType "file" -Value @"
 -- cl_vgui.lua
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
-{
+if ($NeedServer -eq "y" -or $NeedServer -eq "Y") {
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value @"
 -- sv_network.lua
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-## sv_functions.lua
-if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
-{
+if ($NeedServer -eq "y" -or $NeedServer -eq "Y") {
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value @"
 -- sv_functions.lua
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-## sv_hooks.lua
-if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
-{
+if ($NeedServer -eq "y" -or $NeedServer -eq "Y") {
 
 New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value @"
 -- sv_hooks.lua
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-$FontFolderPath = "./$DevName/resource/fonts/"
+$FontFolderPath = "./$AddonName/resource/fonts/"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
 $FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend.ttf")
