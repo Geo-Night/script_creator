@@ -36,7 +36,7 @@ $TableName = {}
 
 $TableName.Folder = "${AddonName}"
 
-function $TableName:Load()
+function ${TableName}:Load()
 
     if SERVER then
 
@@ -70,6 +70,7 @@ function $TableName:Load()
     end
 
 end
+${TableName}:Load()
 "@ -Force > $null
 
 New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
@@ -104,10 +105,10 @@ if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 New-Item -Path "./${LuaRoot}client" -Name "cl_functions.lua" -ItemType "file" -Value @"
 $TableName.Fonts = {}
 
-function $TableName:RX(x) return x * ScrW() / 1920 end
-function $TableName:RY(y) return y * ScrH() / 1080 end
+function ${TableName}:RX(x) return x * ScrW() / 1920 end
+function ${TableName}:RY(y) return y * ScrH() / 1080 end
 
-function $TableName:Font(iSize, sType)
+function ${TableName}:Font(iSize, sType)
 
     iSize = iSize or 16
     sType = sType or ""
@@ -116,7 +117,7 @@ function $TableName:Font(iSize, sType)
 
     if not $TableName.Fonts[sName] then
     
-        CreateFont(sName, {
+        surface.CreateFont(sName, {
             font = ("Lexend %s"):format(sType):Trim(),
             size = iSize,
             weight = 500,
@@ -188,7 +189,7 @@ $FontFolderPath = "./$AddonName/resource/fonts/"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
 $FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend.ttf")
-$BaseUrl = "https://raw.githubusercontent.com/GregoireTacquet/script_creator/static/"
+$BaseUrl = "https://github.com/GregoireTacquet/script_creator/tree/e1a0a7a212c36c0c9f0007daeb49562224a6e1b8/static"
 
 foreach ($FontFile in $FontFiles) {
     $FontUrl = $BaseUrl + $FontFile
