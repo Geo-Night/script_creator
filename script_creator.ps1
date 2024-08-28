@@ -1,146 +1,139 @@
-Write-Host "Script Creator - Automatic addon creation
-"
+Write-Host "Script Creator - Automatic addon creation script"
 
-# Asking for details
-$DevName = Read-Host -Prompt "Entrez le nom (en minuscule, un seul mot) de votre addon (Par defaut : 'nom_addon')"
-$TableName = Read-Host -Prompt "Entrez le nom de la table globale qui sera créée (Par defaut : 'NomAddon')"
-$NeedServer = Read-Host -Prompt "Avez-vous besoin d'une partie serveur pour votre addon ? (y/n)"
-$NeedClient = Read-Host -Prompt "Avez-vous besoin d'une partie client pour votre addon ? (y/n)"
-$NeedConst = Read-Host -Prompt "Voulez-vous un fichier pour mettre des valeurs constantes ? (y/n)"
+&AddonName = Read-Host -Prompt "Enter the name of the addon (addon_name)"
+&TableName = Read-Host -Prompt "Enter the name of the table (AddonName)"
+&NeedServer = Read-Host -Prompt "Do you need a server part ? (y/n)"
+&NeedClient = Read-Host -Prompt "Do you need a client part ? (y/n)"
+&NeedConst = Read-Host -Prompt "Do you need a constants values ? (y/n)"
 Write-Host ""
 Clear-Host
 
-Write-Host "Script Creator - Automatic addon creation
+Write-Host "Creating the addon folder"
 
-Processing"
+if (&AddonName -eq "") { &AddonName = "addon_name" }
+if (&TableName -eq "") { &TableName = "AddonName" }
 
-# Set default values
-if ($DevName -eq "") { $DevName = "addon_name" }
-if ($TableName -eq "") { $TableName = "AddonName" }
+&LuaRoot = "&AddonName/lua/&AddonName/"
 
-$LuaRoot = "$DevName/lua/$DevName/"
+New-Item -Name "&AddonName" -ItemType "directory" -Force > $null
 
-# First step: Create folders
-New-Item -Name "$DevName/lua/autorun" -ItemType "directory" -Force > $NULL
-
-if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
-{
-	New-Item -Name "${LuaRoot}server" -ItemType "directory" -Force > $NULL
+if (&NeedServer -eq "y" or &NeedServer -eq "Y") {
+    New-Item -Name "&{LuaRoot}server" -ItemType "directory" -Force > $null
 }
 
-if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
-{
-	New-Item -Name "${LuaRoot}client" -ItemType "directory" -Force > $NULL
+if (&NeedClient -eq "y" or &NeedClient -eq "Y") {
+    New-Item -Name "&{LuaRoot}client" -ItemType "directory" -Force > $null
 }
 
-Write-Host "Processing."
+Write-Host "Processing"
 
-# Second step: Create files
-## autorun.lua
-New-Item -Path "./$DevName/lua/autorun/" -Name "${DevName}_load.lua" -ItemType "file" -Value @"
-$TableName = {}
+&ServerComment = &(@('-- ', $null)[[byte]((&NeedServer -eq "y" -or &NeedServer -eq "Y"))])
+&ClientComment = &(@('-- ', $null)[[byte]((&NeedClient -eq "y" -or &NeedClient -eq "Y"))])
+&ConstComment = &(@('-- ', $null)[[byte]((&NeedConst -eq "y" -or &NeedConst -eq "Y"))])
 
-$TableName.Folder = "${DevName}"
+New-Item -Path "./&AddonName/lua/autorun/" -Name "&{AddonName}_load.lua" -ItemType "file" -Value @"
+&TableName = {}
 
-function ${TableName}:Load()
+&TableName.Folder = "&{AddonName}"
+
+function &TableName:Load()
 
     if SERVER then
 
-        include(self.Folder.."/config.lua")
-        include(self.Folder.."/constants.lua")
-    
-        AddCSLuaFile(self.Folder.."/config.lua")
-        AddCSLuaFile(self.Folder.."/constants.lua")
+        -- Shared
+        include(&TableName.Folder .. "/config.lua")
+        AddCSLuaFile(&TableName.Folder .. "/config.lua")
 
-        AddCSLuaFile(self.Folder.."/client/cl_functions.lua")
-        AddCSLuaFile(self.Folder.."/client/cl_hooks.lua")
+        -- Server
+        ${ServerComment}include(&TableName.Folder .. "/server/sv_hooks.lua")
+        ${ServerComment}include(&TableName.Folder .. "/server/sv_functions.lua")
+        ${ServerComment}include(&TableName.Folder .. "/server/sv_network.lua")
+
+        -- Client
+        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_hooks.lua")
+        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_functions.lua")
+        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_network.lua")
+        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_vgui.lua")
 
     else
 
-        include(self.Folder.."/config.lua")
-        include(self.Folder.."/constants.lua")
+        -- Shared
+        include(&TableName.Folder .. "/config.lua")
+        AddCSLuaFile(&TableName.Folder .. "/config.lua")
 
-        include(self.Folder.."/client/cl_functions.lua")
-        include(self.Folder.."/client/cl_hooks.lua")
+        -- Client
+        ${ClientComment}include(&TableName.Folder .. "/client/cl_hooks.lua")
+        ${ClientComment}include(&TableName.Folder .. "/client/cl_functions.lua")
+        ${ClientComment}include(&TableName.Folder .. "/client/cl_network.lua")
+        ${ClientComment}include(&TableName.Folder .. "/client/cl_vgui.lua")
 
     end
 
 end
-${TableName}:Load()
-"@ -Force > $NULL
+"@ -Force > $null
 
-## config.lua
-New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
-$TableName.Config = {}
+New-Item -Path "./&{LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
+&TableName.Config = {}
 
--- Admin ranks
-$TableName.Config.AdminRanks = {
-	["superadmin"] = true,	
-	["admin"] = true	
+&TableName.Config.AdminRanks = {
+    ["superadmin"] = true,
+    ["admin"] = true
 }
-"@ -Force > $NULL
+"@ -Force > $null
 
-## constants.lua
-if ($NeedConst -eq "Y" -or $NeedConst -eq "y")
+if (&NeedConst -eq "y" or &NeedConst -eq "Y")
 {
 
-New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
-$TableName.Constants = {}
+New-Item -Path "./&{LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
+&TableName.Constants = {}
 
--- Colors constants
-$TableName.Constants["colors"] = {
-	["background"] = Color(20, 20, 20),
-	["header"] = Color(35, 35, 35),
-	["primary"] = Color(8, 67, 214),
+&TableName.Constants.Colors = {
+    ["red"] = Color(255, 0, 0),
+    ["green"] = Color(0, 255, 0),
+    ["blue"] = Color(0, 0, 255)
 }
 
--- Materials constants
-$TableName.Constants["materials"] = {
-	["logo"] = Material("materials/${DevName}"),
+&TableName.Constants.Materials = {
+    ["example"] = Material("materials/&{AddonName}/example.png")
 }
-"@ -Force > $NULL
+"@ -Force > $null
 
 }
 
-## cl_functions.lua
-if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
+if (&NeedClient -eq "y" or &NeedClient -eq "Y")
 {
 
-New-Item -Path "./${LuaRoot}client/" -Name "cl_functions.lua" -ItemType "file" -Value @"
-$TableName.Fonts = {}
+New-Item -Path "./&{LuaRoot}client" -Name "cl_functions.lua" -ItemType "file" -Value @"
+&TableName.Fonts = {}
 
-function ${TableName}:RX(x) return x / 1920 * ScrW() end
-function ${TableName}:RY(y) return y / 1080 * ScrH() end
+function &TableName:RX(x) return x * ScrW() / 1920 end
+function &TableName:RY(y) return y * ScrH() / 1080 end
 
--- Automatic font-creation function
-function ${TableName}:Font(iSize, iWeight)
+function &TableName:Font(iSize, sType)
 
-    iSize = (iSize or 24)
-    iWeight = (iWeight or 500)
+    iSize = iSize or 16
+    sType = sType or ""
 
-    local sName = ("${TableName}:Font:%i:%i"):format(iSize, iWeight)
+    local sName = ("&{AddonName}:Font:%i:%s"):format(iSize, sType)
 
-    if not self.Fonts[sName] then
-
-        surface.CreateFont(sName, {
-            font = "Montserrat",
-            extended = false,
-            size = ${TableName}:RX(iSize),
-            weight = iWeight
+    if not &TableName.Fonts[sName] then
+    
+        CreateFont(sName, {
+            font = ("Lexend %s"):format(sType):Trim(),
+            size = iSize,
+            weight = 500,
+            extended = false
         })
 
-        self.Fonts[sName] = true
+        &TableName.Fonts[sName] = true
 
     end
 
     return sName
 
 end
-"@ -Force > $NULL
+"@ -Force > $null
 
-}
-
-## cl_hooks.lua
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
 
@@ -152,9 +145,66 @@ end)
 
 }
 
-Write-Host "Processing..
-Processing..."
-Clear-Host
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}client/" -Name "cl_network.lua" -ItemType "file" -Value @"
+-- cl_network.lua
+"@ -Force > $NULL
+
+}
+
+if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}client/" -Name "cl_vgui.lua" -ItemType "file" -Value @"
+-- cl_vgui.lua
+"@ -Force > $NULL
+
+}
+
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}server/" -Name "sv_network.lua" -ItemType "file" -Value @"
+-- sv_network.lua
+"@ -Force > $NULL
+
+}
+
+## sv_functions.lua
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}server/" -Name "sv_functions.lua" -ItemType "file" -Value @"
+-- sv_functions.lua
+"@ -Force > $NULL
+
+}
+
+## sv_hooks.lua
+if ($NeedServer -eq "Y" -or $NeedServer -eq "y")
+{
+
+New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Value @"
+-- sv_hooks.lua
+"@ -Force > $NULL
+
+}
+
+$FontFolderPath = "./$DevName/resource/fonts/"
+New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
+
+$FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend.ttf")
+$BaseUrl = "https://raw.githubusercontent.com/GregoireTacquet/script_creator/static/"
+
+foreach ($FontFile in $FontFiles) {
+    $FontUrl = $BaseUrl + $FontFile
+    $DestinationPath = $FontFolderPath + $FontFile
+    Invoke-WebRequest -Uri $FontUrl -OutFile $DestinationPath
+}
+
+Write-Host "Processing"
 
 Write-Host "
-Successfully created! Have fun."
+Successfully created!"
