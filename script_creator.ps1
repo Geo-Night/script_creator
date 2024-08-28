@@ -1,122 +1,122 @@
 Write-Host "Script Creator - Automatic addon creation script"
 
-&AddonName = Read-Host -Prompt "Enter the name of the addon (addon_name)"
-&TableName = Read-Host -Prompt "Enter the name of the table (AddonName)"
-&NeedServer = Read-Host -Prompt "Do you need a server part ? (y/n)"
-&NeedClient = Read-Host -Prompt "Do you need a client part ? (y/n)"
-&NeedConst = Read-Host -Prompt "Do you need a constants values ? (y/n)"
+$AddonName = Read-Host -Prompt "Enter the name of the addon (addon_name)"
+$TableName = Read-Host -Prompt "Enter the name of the table (AddonName)"
+$NeedServer = Read-Host -Prompt "Do you need a server part ? (y/n)"
+$NeedClient = Read-Host -Prompt "Do you need a client part ? (y/n)"
+$NeedConst = Read-Host -Prompt "Do you need a constants values ? (y/n)"
 Write-Host ""
 Clear-Host
 
 Write-Host "Creating the addon folder"
 
-if (&AddonName -eq "") { &AddonName = "addon_name" }
-if (&TableName -eq "") { &TableName = "AddonName" }
+if ($AddonName -eq "") { $AddonName = "addon_name" }
+if ($TableName -eq "") { $TableName = "AddonName" }
 
-&LuaRoot = "&AddonName/lua/&AddonName/"
+$LuaRoot = "$AddonName/lua/$AddonName/"
 
-New-Item -Name "&AddonName" -ItemType "directory" -Force > $null
+New-Item -Name "$AddonName" -ItemType "directory" -Force > $null
 
-if (&NeedServer -eq "y" or &NeedServer -eq "Y") {
-    New-Item -Name "&{LuaRoot}server" -ItemType "directory" -Force > $null
+if ($NeedServer -eq "y" or $NeedServer -eq "Y") {
+    New-Item -Name "${LuaRoot}server" -ItemType "directory" -Force > $null
 }
 
-if (&NeedClient -eq "y" or &NeedClient -eq "Y") {
-    New-Item -Name "&{LuaRoot}client" -ItemType "directory" -Force > $null
+if ($NeedClient -eq "y" or $NeedClient -eq "Y") {
+    New-Item -Name "${LuaRoot}client" -ItemType "directory" -Force > $null
 }
 
 Write-Host "Processing"
 
-&ServerComment = &(@('-- ', $null)[[byte]((&NeedServer -eq "y" -or &NeedServer -eq "Y"))])
-&ClientComment = &(@('-- ', $null)[[byte]((&NeedClient -eq "y" -or &NeedClient -eq "Y"))])
-&ConstComment = &(@('-- ', $null)[[byte]((&NeedConst -eq "y" -or &NeedConst -eq "Y"))])
+$ServerComment = $(@('-- ', $null)[[byte](($NeedServer -eq "y" -or $NeedServer -eq "Y"))])
+$ClientComment = $(@('-- ', $null)[[byte](($NeedClient -eq "y" -or $NeedClient -eq "Y"))])
+$ConstComment = $(@('-- ', $null)[[byte](($NeedConst -eq "y" -or $NeedConst -eq "Y"))])
 
-New-Item -Path "./&AddonName/lua/autorun/" -Name "&{AddonName}_load.lua" -ItemType "file" -Value @"
-&TableName = {}
+New-Item -Path "./$AddonName/lua/autorun/" -Name "${AddonName}_load.lua" -ItemType "file" -Value @"
+$TableName = {}
 
-&TableName.Folder = "&{AddonName}"
+$TableName.Folder = "${AddonName}"
 
-function &TableName:Load()
+function $TableName:Load()
 
     if SERVER then
 
         -- Shared
-        include(&TableName.Folder .. "/config.lua")
-        AddCSLuaFile(&TableName.Folder .. "/config.lua")
+        include($TableName.Folder .. "/config.lua")
+        AddCSLuaFile($TableName.Folder .. "/config.lua")
 
         -- Server
-        ${ServerComment}include(&TableName.Folder .. "/server/sv_hooks.lua")
-        ${ServerComment}include(&TableName.Folder .. "/server/sv_functions.lua")
-        ${ServerComment}include(&TableName.Folder .. "/server/sv_network.lua")
+        ${ServerComment}include($TableName.Folder .. "/server/sv_hooks.lua")
+        ${ServerComment}include($TableName.Folder .. "/server/sv_functions.lua")
+        ${ServerComment}include($TableName.Folder .. "/server/sv_network.lua")
 
         -- Client
-        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_hooks.lua")
-        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_functions.lua")
-        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_network.lua")
-        ${ClientComment}AddCSLuaFile(&TableName.Folder .. "/client/cl_vgui.lua")
+        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_hooks.lua")
+        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_functions.lua")
+        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_network.lua")
+        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
     else
 
         -- Shared
-        include(&TableName.Folder .. "/config.lua")
-        AddCSLuaFile(&TableName.Folder .. "/config.lua")
+        include($TableName.Folder .. "/config.lua")
+        AddCSLuaFile($TableName.Folder .. "/config.lua")
 
         -- Client
-        ${ClientComment}include(&TableName.Folder .. "/client/cl_hooks.lua")
-        ${ClientComment}include(&TableName.Folder .. "/client/cl_functions.lua")
-        ${ClientComment}include(&TableName.Folder .. "/client/cl_network.lua")
-        ${ClientComment}include(&TableName.Folder .. "/client/cl_vgui.lua")
+        ${ClientComment}include($TableName.Folder .. "/client/cl_hooks.lua")
+        ${ClientComment}include($TableName.Folder .. "/client/cl_functions.lua")
+        ${ClientComment}include($TableName.Folder .. "/client/cl_network.lua")
+        ${ClientComment}include($TableName.Folder .. "/client/cl_vgui.lua")
 
     end
 
 end
 "@ -Force > $null
 
-New-Item -Path "./&{LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
-&TableName.Config = {}
+New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
+$TableName.Config = {}
 
-&TableName.Config.AdminRanks = {
+$TableName.Config.AdminRanks = {
     ["superadmin"] = true,
     ["admin"] = true
 }
 "@ -Force > $null
 
-if (&NeedConst -eq "y" or &NeedConst -eq "Y")
+if ($NeedConst -eq "y" or $NeedConst -eq "Y")
 {
 
-New-Item -Path "./&{LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
-&TableName.Constants = {}
+New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
+$TableName.Constants = {}
 
-&TableName.Constants.Colors = {
+$TableName.Constants.Colors = {
     ["red"] = Color(255, 0, 0),
     ["green"] = Color(0, 255, 0),
     ["blue"] = Color(0, 0, 255)
 }
 
-&TableName.Constants.Materials = {
-    ["example"] = Material("materials/&{AddonName}/example.png")
+$TableName.Constants.Materials = {
+    ["example"] = Material("materials/${AddonName}/example.png")
 }
 "@ -Force > $null
 
 }
 
-if (&NeedClient -eq "y" or &NeedClient -eq "Y")
+if ($NeedClient -eq "y" or $NeedClient -eq "Y")
 {
 
-New-Item -Path "./&{LuaRoot}client" -Name "cl_functions.lua" -ItemType "file" -Value @"
-&TableName.Fonts = {}
+New-Item -Path "./${LuaRoot}client" -Name "cl_functions.lua" -ItemType "file" -Value @"
+$TableName.Fonts = {}
 
-function &TableName:RX(x) return x * ScrW() / 1920 end
-function &TableName:RY(y) return y * ScrH() / 1080 end
+function $TableName:RX(x) return x * ScrW() / 1920 end
+function $TableName:RY(y) return y * ScrH() / 1080 end
 
-function &TableName:Font(iSize, sType)
+function $TableName:Font(iSize, sType)
 
     iSize = iSize or 16
     sType = sType or ""
 
-    local sName = ("&{AddonName}:Font:%i:%s"):format(iSize, sType)
+    local sName = ("${AddonName}:Font:%i:%s"):format(iSize, sType)
 
-    if not &TableName.Fonts[sName] then
+    if not $TableName.Fonts[sName] then
     
         CreateFont(sName, {
             font = ("Lexend %s"):format(sType):Trim(),
@@ -125,7 +125,7 @@ function &TableName:Font(iSize, sType)
             extended = false
         })
 
-        &TableName.Fonts[sName] = true
+        $TableName.Fonts[sName] = true
 
     end
 
@@ -133,6 +133,8 @@ function &TableName:Font(iSize, sType)
 
 end
 "@ -Force > $null
+
+}
 
 if ($NeedClient -eq "Y" -or $NeedClient -eq "y")
 {
