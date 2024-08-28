@@ -55,6 +55,12 @@ function ${TableName}:Load()
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_network.lua")
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
+        -- Fonts
+        resource.AddSingleFile("resource/fonts/Lexend-Bold.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Light.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Medium.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Regular.ttf")
+
     else
 
         -- Shared
