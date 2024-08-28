@@ -189,7 +189,7 @@ $FontFolderPath = "./$AddonName/resource/fonts/"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
 $FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend.ttf")
-$BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/e1a0a7a212c36c0c9f0007daeb49562224a6e1b8/static/"
+$BaseUrl = "https://raw.githubusercontent.com/GregoireTacquet/script_creator/static/"
 
 foreach ($FontFile in $FontFiles) {
     $FontUrl = $BaseUrl + $FontFile
