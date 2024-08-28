@@ -111,14 +111,14 @@ function ${TableName}:RY(y) return y * ScrH() / 1080 end
 function ${TableName}:Font(iSize, sType)
 
     iSize = iSize or 16
-    sType = sType or ""
+    sType = sType or "Regular"
 
-    local sName = ("${AddonName}:Font:%i:%s"):format(iSize, sType)
+    local sName = ("${AddonName}:Font:%s:%i"):format(sType, iSize)
 
     if not $TableName.Fonts[sName] then
     
         surface.CreateFont(sName, {
-            font = ("Lexend %s"):format(sType):Trim(),
+            font = ("Lexend %s"):format(sType),
             size = iSize,
             weight = 500,
             extended = false
@@ -188,7 +188,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 $FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend.ttf")
+$FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend-Regular.ttf")
 $BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
 
 foreach ($FontFile in $FontFiles) {
