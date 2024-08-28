@@ -113,7 +113,7 @@ function ${TableName}:Font(iSize, sType)
     iSize = iSize or 16
     sType = sType or "Regular"
 
-    local sName = ("${AddonName}:Font:%s:%i"):format(sType, iSize)
+    local sName = ("${TableName}:%s:%i"):format(sType, iSize)
 
     if not $TableName.Fonts[sName] then
     
