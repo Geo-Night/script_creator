@@ -185,16 +185,22 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 
 }
 
-$FontFolderPath = "./$AddonName/resource/fonts/"
+$FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
 $FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend.ttf")
-$BaseUrl = "https://raw.githubusercontent.com/GregoireTacquet/script_creator/static/"
+$BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
 
 foreach ($FontFile in $FontFiles) {
     $FontUrl = $BaseUrl + $FontFile
-    $DestinationPath = $FontFolderPath + $FontFile
-    Invoke-WebRequest -Uri $FontUrl -OutFile $DestinationPath
+    $DestinationPath = Join-Path -Path $FontFolderPath -ChildPath $FontFile
+
+    try {
+        Invoke-WebRequest -Uri $FontUrl -OutFile $DestinationPath
+        Write-Output "Downloaded successfully : $FontFile"
+    } catch {
+        Write-Error "Error downloading : $FontFile : $_"
+    }
 }
 
 Write-Host "Processing"
