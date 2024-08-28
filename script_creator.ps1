@@ -42,7 +42,9 @@ function ${TableName}:Load()
 
         -- Shared
         include($TableName.Folder .. "/config.lua")
+        ${ConstComment}include($TableName.Folder .. "/constants.lua")
         AddCSLuaFile($TableName.Folder .. "/config.lua")
+        ${ConstComment}AddCSLuaFile($TableName.Folder .. "/constants.lua")
 
         -- Server
         ${ServerComment}include($TableName.Folder .. "/server/sv_hooks.lua")
@@ -65,7 +67,9 @@ function ${TableName}:Load()
 
         -- Shared
         include($TableName.Folder .. "/config.lua")
+        ${ConstComment}include($TableName.Folder .. "/constants.lua")
         AddCSLuaFile($TableName.Folder .. "/config.lua")
+        ${ConstComment}AddCSLuaFile($TableName.Folder .. "/constants.lua")
 
         -- Client
         ${ClientComment}include($TableName.Folder .. "/client/cl_hooks.lua")
