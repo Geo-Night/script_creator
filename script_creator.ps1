@@ -129,7 +129,7 @@ function ${TableName}:Font(iSize, sType)
     
         surface.CreateFont(sName, {
             font = ("Lexend %s"):format(sType),
-            size = iSize,
+            size = ${TableName}:RX(iSize),
             weight = 500,
             extended = false
         })
