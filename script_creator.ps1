@@ -209,7 +209,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 $FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend-Regular.ttf")
+$FontFiles = @("Josefin-Sans-Bold.ttf", "Josefin-Sans-Light.ttf", "Josefin-Sans-Medium.ttf", "Josefin-Sans-Regular.ttf")
 $BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
 
 foreach ($FontFile in $FontFiles) {
