@@ -123,12 +123,23 @@ function ${TableName}:Font(iSize, sType)
     iSize = iSize or 16
     sType = sType or "Regular"
 
+    local tValidTypes = {
+        ["Bold"] = true,
+        ["Medium"] = true,
+        ["Regular"] = true,
+        ["Light"] = true
+    }
+
+    if not tValidTypes[sType] then
+        sType = "Regular"
+    end
+
     local sName = ("${TableName}:%s:%i"):format(sType, iSize)
 
     if not $TableName.Fonts[sName] then
     
         surface.CreateFont(sName, {
-            font = ("Lexend %s"):format(sType),
+            font = ("Josefin Sans %s"):format(sType),
             size = ${TableName}:RX(iSize),
             weight = 500,
             extended = false
