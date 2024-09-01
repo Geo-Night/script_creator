@@ -58,10 +58,10 @@ function ${TableName}:Load()
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
         -- Fonts
-        resource.AddSingleFile("resource/fonts/Lexend-Bold.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Light.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Medium.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Regular.ttf")
+        resource.AddSingleFile("resource/fonts/Josefin-Sans-Bold.ttf")
+        resource.AddSingleFile("resource/fonts/Josefin-Sans-Light.ttf")
+        resource.AddSingleFile("resource/fonts/Josefin-Sans-Medium.ttf")
+        resource.AddSingleFile("resource/fonts/Josefin-Sans-Regular.ttf")
 
     else
 
