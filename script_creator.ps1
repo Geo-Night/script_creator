@@ -58,10 +58,9 @@ function ${TableName}:Load()
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
         -- Fonts
-        resource.AddSingleFile("resource/fonts/Josefin-Sans-Bold.ttf")
-        resource.AddSingleFile("resource/fonts/Josefin-Sans-Light.ttf")
-        resource.AddSingleFile("resource/fonts/Josefin-Sans-Medium.ttf")
-        resource.AddSingleFile("resource/fonts/Josefin-Sans-Regular.ttf")
+        resource.AddSingleFile("resource/fonts/Amiko-Bold.ttf")
+        resource.AddSingleFile("resource/fonts/Amiko-SemiBold.ttf")    
+        resource.AddSingleFile("resource/fonts/Amiko-Regular.ttf")
 
     else
 
@@ -125,9 +124,8 @@ function ${TableName}:Font(iSize, sType)
 
     local tValidTypes = {
         ["Bold"] = true,
-        ["Medium"] = true,
-        ["Regular"] = true,
-        ["Light"] = true
+        ["SemiBold"] = true,
+        ["Regular"] = true
     }
 
     if not tValidTypes[sType] then
@@ -139,7 +137,7 @@ function ${TableName}:Font(iSize, sType)
     if not $TableName.Fonts[sName] then
     
         surface.CreateFont(sName, {
-            font = ("Josefin Sans %s"):format(sType),
+            font = ("Amiko %s"):format(sType),
             size = ${TableName}:RX(iSize),
             weight = 500,
             extended = false
@@ -209,7 +207,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 $FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("Josefin-Sans-Bold.ttf", "Josefin-Sans-Light.ttf", "Josefin-Sans-Medium.ttf", "Josefin-Sans-Regular.ttf")
+$FontFiles = @("Amiko-Bold.ttf", "Amiko-Regular.ttf", "Amiko-SemiBold.ttf")
 $BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
 
 foreach ($FontFile in $FontFiles) {
