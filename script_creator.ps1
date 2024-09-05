@@ -139,7 +139,7 @@ function ${TableName}:Font(iSize, sType)
         surface.CreateFont(sName, {
             font = ("Amiko %s"):format(sType),
             size = ${TableName}:RX(iSize),
-            weight = 500,
+            weight = 0,
             extended = false
         })
 
