@@ -58,9 +58,12 @@ function ${TableName}:Load()
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
         -- Fonts
-        resource.AddSingleFile("resource/fonts/Amiko-Bold.ttf")
-        resource.AddSingleFile("resource/fonts/Amiko-SemiBold.ttf")    
-        resource.AddSingleFile("resource/fonts/Amiko-Regular.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Black.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Bold.ttf")    
+        resource.AddSingleFile("resource/fonts/Lexend-Light.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Medium.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Regular.ttf")
+        resource.AddSingleFile("resource/fonts/Lexend-Thin.ttf")
 
     else
 
@@ -123,9 +126,12 @@ function ${TableName}:Font(iSize, sType)
     sType = sType or "Regular"
 
     local tValidTypes = {
+        ["Black"] = true,
         ["Bold"] = true,
-        ["SemiBold"] = true,
+        ["Light"] = true
+        ["Medium"] = true
         ["Regular"] = true
+        ["Thin"] = true
     }
 
     if not tValidTypes[sType] then
@@ -137,7 +143,7 @@ function ${TableName}:Font(iSize, sType)
     if not $TableName.Fonts[sName] then
     
         surface.CreateFont(sName, {
-            font = ("Amiko %s"):format(sType),
+            font = ("Lexend %s"):format(sType),
             size = ${TableName}:RX(iSize),
             weight = 0,
             extended = false
@@ -207,7 +213,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 $FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("Amiko-Bold.ttf", "Amiko-Regular.ttf", "Amiko-SemiBold.ttf")
+$FontFiles = @("Lexend-Black.ttf", "Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend-Regular.ttf", "Lexend-Thin.ttf")
 $BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
 
 foreach ($FontFile in $FontFiles) {
