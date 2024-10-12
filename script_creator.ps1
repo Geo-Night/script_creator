@@ -128,9 +128,9 @@ function ${TableName}:Font(iSize, sType)
     local tValidTypes = {
         ["Black"] = true,
         ["Bold"] = true,
-        ["Light"] = true
-        ["Medium"] = true
-        ["Regular"] = true
+        ["Light"] = true,
+        ["Medium"] = true,
+        ["Regular"] = true,
         ["Thin"] = true
     }
 
