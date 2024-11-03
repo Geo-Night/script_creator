@@ -58,12 +58,14 @@ function ${TableName}:Load()
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
         -- Fonts
-        resource.AddSingleFile("resource/fonts/Lexend-Black.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Bold.ttf")    
-        resource.AddSingleFile("resource/fonts/Lexend-Light.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Medium.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Regular.ttf")
-        resource.AddSingleFile("resource/fonts/Lexend-Thin.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Bold.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Bold-Italic.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Medium.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Medium-Italic.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Regular.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Regular-Italic.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Light.ttf")
+        resource.AddSingleFile("resource/fonts/Ubuntu-Light-Italic.ttf")
 
     else
 
@@ -120,36 +122,38 @@ $TableName.Fonts = {}
 function ${TableName}:RX(x) return x * ScrW() / 1920 end
 function ${TableName}:RY(y) return y * ScrH() / 1080 end
 
-function ${TableName}:Font(iSize, sType)
+function ${TableName}:Font(iSize, sType, bItalic)
 
     iSize = iSize or 16
     sType = sType or "Regular"
 
     local tValidTypes = {
-        ["Black"] = true,
         ["Bold"] = true,
-        ["Light"] = true,
         ["Medium"] = true,
         ["Regular"] = true,
-        ["Thin"] = true
+        ["Light"] = true
     }
 
     if not tValidTypes[sType] then
         sType = "Regular"
     end
 
-    local sName = ("${TableName}:%s:%i"):format(sType, iSize)
+    if bItalic then
+        sType = ("%s Italic"):format(sType)
+    end
 
-    if not $TableName.Fonts[sName] then
+    local sName = ("GeoLIB:%s:%i"):format(sType, iSize)
+
+    if not GeoLIB.Fonts[sName] then
     
         surface.CreateFont(sName, {
-            font = ("Lexend %s"):format(sType),
-            size = ${TableName}:RX(iSize),
+            font = ("Ubuntu %s"):format(sType),
+            size = GeoLIB:RX(iSize),
             weight = 0,
             extended = false
         })
 
-        $TableName.Fonts[sName] = true
+        GeoLIB.Fonts[sName] = true
 
     end
 
@@ -213,7 +217,7 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 $FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
 New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
 
-$FontFiles = @("Lexend-Black.ttf", "Lexend-Bold.ttf", "Lexend-Light.ttf", "Lexend-Medium.ttf", "Lexend-Regular.ttf", "Lexend-Thin.ttf")
+$FontFiles = @("Ubuntu-Bold.ttf", "Ubuntu-Bold-Italic.ttf", "Ubuntu-Light.ttf", "Ubuntu-Light-Italic.ttf", "Ubuntu-Medium.ttf", "Ubuntu-Medium-Italic.ttf", "Ubuntu-Regular.ttf", "Ubuntu-Regular-Italic.ttf")
 $BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
 
 foreach ($FontFile in $FontFiles) {
