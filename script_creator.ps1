@@ -4,7 +4,6 @@ $AddonName = Read-Host -Prompt "Enter the name of the addon (addon_name)"
 $TableName = Read-Host -Prompt "Enter the name of the table (AddonName)"
 $NeedServer = Read-Host -Prompt "Do you need a server part ? (y/n)"
 $NeedClient = Read-Host -Prompt "Do you need a client part ? (y/n)"
-$NeedConst = Read-Host -Prompt "Do you need constants values ? (y/n)"
 Write-Host ""
 Clear-Host
 
@@ -29,53 +28,40 @@ Write-Host "Processing"
 
 $ServerComment = if ($NeedServer -eq "y" -or $NeedServer -eq "Y") { "" } else { "-- " }
 $ClientComment = if ($NeedClient -eq "y" -or $NeedClient -eq "Y") { "" } else { "-- " }
-$ConstComment = if ($NeedConst -eq "y" -or $NeedConst -eq "Y") { "" } else { "-- " }
 
 New-Item -Path "./$AddonName/lua/autorun/" -Name "${AddonName}_load.lua" -ItemType "file" -Value @"
+-- Library table
 $TableName = {}
 
-$TableName.Folder = "${AddonName}"
-
+-- Function to load library files
 function ${TableName}:Load()
+
+    local sFolder = "${AddonName}"
 
     if SERVER then
 
-        -- Shared
+        -- [[ Shared part ]]--
         include($TableName.Folder .. "/config.lua")
-        ${ConstComment}include($TableName.Folder .. "/constants.lua")
         AddCSLuaFile($TableName.Folder .. "/config.lua")
-        ${ConstComment}AddCSLuaFile($TableName.Folder .. "/constants.lua")
 
-        -- Server
-        ${ServerComment}include($TableName.Folder .. "/server/sv_hooks.lua")
-        ${ServerComment}include($TableName.Folder .. "/server/sv_functions.lua")
-        ${ServerComment}include($TableName.Folder .. "/server/sv_network.lua")
-
-        -- Client
+        -- [[ Client part ]]--
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_hooks.lua")
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_functions.lua")
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_network.lua")
         ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
 
-        -- Fonts
-        resource.AddSingleFile("resource/fonts/Ubuntu-Bold.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Bold-Italic.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Medium.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Medium-Italic.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Regular.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Regular-Italic.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Light.ttf")
-        resource.AddSingleFile("resource/fonts/Ubuntu-Light-Italic.ttf")
+        -- [[ Server part ]]--
+        ${ServerComment}include($TableName.Folder .. "/server/sv_hooks.lua")
+        ${ServerComment}include($TableName.Folder .. "/server/sv_functions.lua")
+        ${ServerComment}include($TableName.Folder .. "/server/sv_network.lua")
 
     else
 
-        -- Shared
+        -- [[ Shared part ]]--
         include($TableName.Folder .. "/config.lua")
-        ${ConstComment}include($TableName.Folder .. "/constants.lua")
         AddCSLuaFile($TableName.Folder .. "/config.lua")
-        ${ConstComment}AddCSLuaFile($TableName.Folder .. "/constants.lua")
 
-        -- Client
+        -- [[ Client part ]]--
         ${ClientComment}include($TableName.Folder .. "/client/cl_hooks.lua")
         ${ClientComment}include($TableName.Folder .. "/client/cl_functions.lua")
         ${ClientComment}include($TableName.Folder .. "/client/cl_network.lua")
@@ -88,78 +74,14 @@ ${TableName}:Load()
 "@ -Force > $null
 
 New-Item -Path "./${LuaRoot}" -Name "config.lua" -ItemType "file" -Value @"
+-- Config table
 $TableName.Config = {}
-
-$TableName.Config.AdminRanks = {
-    ["superadmin"] = true,
-    ["admin"] = true
-}
 "@ -Force > $null
-
-if ($NeedConst -eq "y" -or $NeedConst -eq "Y") {
-
-New-Item -Path "./${LuaRoot}" -Name "constants.lua" -ItemType "file" -Value @"
-$TableName.Constants = {}
-
-$TableName.Constants.Colors = {
-    ["red"] = Color(255, 0, 0),
-    ["green"] = Color(0, 255, 0),
-    ["blue"] = Color(0, 0, 255)
-}
-
-$TableName.Constants.Materials = {
-    ["example"] = Material("materials/${AddonName}/example.png")
-}
-"@ -Force > $null
-
-}
 
 if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 
 New-Item -Path "./${LuaRoot}client" -Name "cl_functions.lua" -ItemType "file" -Value @"
-$TableName.Fonts = {}
-
-function ${TableName}:RX(x) return x * ScrW() / 1920 end
-function ${TableName}:RY(y) return y * ScrH() / 1080 end
-
-function ${TableName}:Font(iSize, sType, bItalic)
-
-    iSize = iSize or 16
-    sType = sType or "Regular"
-
-    local tValidTypes = {
-        ["Bold"] = true,
-        ["Medium"] = true,
-        ["Regular"] = true,
-        ["Light"] = true
-    }
-
-    if not tValidTypes[sType] then
-        sType = "Regular"
-    end
-
-    if bItalic then
-        sType = ("%s Italic"):format(sType)
-    end
-
-    local sName = ("GeoLIB:%s:%i"):format(sType, iSize)
-
-    if not GeoLIB.Fonts[sName] then
-    
-        surface.CreateFont(sName, {
-            font = ("Ubuntu %s"):format(sType),
-            size = GeoLIB:RX(iSize),
-            weight = 0,
-            extended = false
-        })
-
-        GeoLIB.Fonts[sName] = true
-
-    end
-
-    return sName
-
-end
+-- cl_functions.lua
 "@ -Force > $null
 
 }
@@ -167,9 +89,7 @@ end
 if ($NeedClient -eq "y" -or $NeedClient -eq "Y") {
 
 New-Item -Path "./${LuaRoot}client/" -Name "cl_hooks.lua" -ItemType "file" -Value @"
-hook.Add("OnScreenSizeChanged", "${TableName}:OnScreenSizeChanged", function()
-	${TableName}.Fonts = {}
-end)
+-- cl_hooks.lua
 "@ -Force > $null
 
 }
@@ -212,24 +132,6 @@ New-Item -Path "./${LuaRoot}server/" -Name "sv_hooks.lua" -ItemType "file" -Valu
 -- sv_hooks.lua
 "@ -Force > $null
 
-}
-
-$FontFolderPath = Join-Path -Path "." -ChildPath "$AddonName/resource/fonts"
-New-Item -Path $FontFolderPath -ItemType "directory" -Force > $null
-
-$FontFiles = @("Ubuntu-Bold.ttf", "Ubuntu-Bold-Italic.ttf", "Ubuntu-Light.ttf", "Ubuntu-Light-Italic.ttf", "Ubuntu-Medium.ttf", "Ubuntu-Medium-Italic.ttf", "Ubuntu-Regular.ttf", "Ubuntu-Regular-Italic.ttf")
-$BaseUrl = "https://github.com/GregoireTacquet/script_creator/raw/main/static/"
-
-foreach ($FontFile in $FontFiles) {
-    $FontUrl = $BaseUrl + $FontFile
-    $DestinationPath = Join-Path -Path $FontFolderPath -ChildPath $FontFile
-
-    try {
-        Invoke-WebRequest -Uri $FontUrl -OutFile $DestinationPath
-        Write-Output "Downloaded successfully : $FontFile"
-    } catch {
-        Write-Error "Error downloading : $FontFile : $_"
-    }
 }
 
 Write-Host "Processing"
