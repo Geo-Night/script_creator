@@ -41,31 +41,31 @@ function ${TableName}:Load()
     if SERVER then
 
         -- [[ Shared part ]]--
-        include($TableName.Folder .. "/config.lua")
-        AddCSLuaFile($TableName.Folder .. "/config.lua")
+        include(sFolder .. "/config.lua")
+        AddCSLuaFile(sFolder .. "/config.lua")
 
         -- [[ Client part ]]--
-        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_hooks.lua")
-        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_functions.lua")
-        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_network.lua")
-        ${ClientComment}AddCSLuaFile($TableName.Folder .. "/client/cl_vgui.lua")
+        ${ClientComment}AddCSLuaFile(sFolder .. "/client/cl_hooks.lua")
+        ${ClientComment}AddCSLuaFile(sFolder .. "/client/cl_functions.lua")
+        ${ClientComment}AddCSLuaFile(sFolder .. "/client/cl_network.lua")
+        ${ClientComment}AddCSLuaFile(sFolder .. "/client/cl_vgui.lua")
 
         -- [[ Server part ]]--
-        ${ServerComment}include($TableName.Folder .. "/server/sv_hooks.lua")
-        ${ServerComment}include($TableName.Folder .. "/server/sv_functions.lua")
-        ${ServerComment}include($TableName.Folder .. "/server/sv_network.lua")
+        ${ServerComment}include(sFolder .. "/server/sv_hooks.lua")
+        ${ServerComment}include(sFolder .. "/server/sv_functions.lua")
+        ${ServerComment}include(sFolder .. "/server/sv_network.lua")
 
     else
 
         -- [[ Shared part ]]--
-        include($TableName.Folder .. "/config.lua")
-        AddCSLuaFile($TableName.Folder .. "/config.lua")
+        include(sFolder .. "/config.lua")
+        AddCSLuaFile(sFolder .. "/config.lua")
 
         -- [[ Client part ]]--
-        ${ClientComment}include($TableName.Folder .. "/client/cl_hooks.lua")
-        ${ClientComment}include($TableName.Folder .. "/client/cl_functions.lua")
-        ${ClientComment}include($TableName.Folder .. "/client/cl_network.lua")
-        ${ClientComment}include($TableName.Folder .. "/client/cl_vgui.lua")
+        ${ClientComment}include(sFolder .. "/client/cl_hooks.lua")
+        ${ClientComment}include(sFolder .. "/client/cl_functions.lua")
+        ${ClientComment}include(sFolder .. "/client/cl_network.lua")
+        ${ClientComment}include(sFolder .. "/client/cl_vgui.lua")
 
     end
 
