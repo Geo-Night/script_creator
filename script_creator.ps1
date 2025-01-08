@@ -30,10 +30,18 @@ $ServerComment = if ($NeedServer -eq "y" -or $NeedServer -eq "Y") { "" } else { 
 $ClientComment = if ($NeedClient -eq "y" -or $NeedClient -eq "Y") { "" } else { "-- " }
 
 New-Item -Path "./$AddonName/lua/autorun/" -Name "${AddonName}_load.lua" -ItemType "file" -Value @"
--- Library table
+-- Script table
 $TableName = {}
 
--- Function to load library files
+-- Check if GLib (GeoNight Library) is installed
+if not GLib then
+
+    MsgC(Color(255, 0, 0), "[GTeleport.] GLib is not installed, please install it and restart the server.\n")
+    return
+
+end
+
+-- Function to load script files
 function ${TableName}:Load()
 
     local sFolder = "${AddonName}"
